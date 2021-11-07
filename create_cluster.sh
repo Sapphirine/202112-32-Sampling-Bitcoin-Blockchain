@@ -1,10 +1,10 @@
 project=$1
 staging_bucket=$2
-gcloud beta dataproc clusters create btc-project \
+gcloud dataproc clusters create btc-project \
     --region us-west4 \
     --optional-components=JUPYTER \
-    --image-version=preview --enable-component-gateway \
-    --metadata 'PIP_PACKAGES=requests_oauthlib google-cloud-bigquery  tweepy==3.10.0' \
+    --image-version=2.0.24-ubuntu18 --enable-component-gateway \
+    --metadata 'PIP_PACKAGES=requests_oauthlib google-cloud-bigquery' \
     --metadata gcs-connector-version=1.9.16 \
     --metadata 'bigquery-connector-version=1.0.0' \
     --project  $project \
