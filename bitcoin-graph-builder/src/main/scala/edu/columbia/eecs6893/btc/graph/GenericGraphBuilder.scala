@@ -32,18 +32,10 @@ object GenericGraphBuilder {
     val graphBuilder = new AddressGraphBuilder
     val graph = graphBuilder.buildGraph(rawTxDf)
 
-    // TODO: Do something with the graph. Namely, save it for processing later.
+    println("--- Graph nodes: " + graph.vertices.count())
+    println("--- Graph edges: " + graph.edges.count())
 
-    // TODO: Sample output for testing.
-    val resultDf = spark.sql(
-      s"""
-       SELECT *
-       FROM ${TX_VIEW}
-       LIMIT 10
-       """)
-
-    // TODO: This is a stand-in. Need to fix-up code to store vertices and edges
-    resultDf.write.mode(options.overwrite).parquet(options.graphOutputPath)
+    // TODO: Save graph components
   }
 
   private def parseArgs(args: Array[String]): GraphBuilderArguments = {
