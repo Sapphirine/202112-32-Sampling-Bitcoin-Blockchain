@@ -30,12 +30,14 @@ object GenericGraphBuilder {
 
     // TODO: Need to fix this. Currently on "AddressGraph" supported
     val graphBuilder = new AddressGraphBuilder
-    val graph = graphBuilder.buildGraph(rawTxDf)
+    val (nodes, edges) = graphBuilder.constructGraphComponents(rawTxDf)
 
-    println("--- Graph nodes: " + graph.vertices.count())
-    println("--- Graph edges: " + graph.edges.count())
+    println("--- Graph nodes: " + nodes.count())
+    println("--- Graph edges: " + edges.count())
 
-    // TODO: Save graph components
+    // Save graph components
+    nodes.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/nodes")
+    edges.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/edges")
   }
 
   private def parseArgs(args: Array[String]): GraphBuilderArguments = {

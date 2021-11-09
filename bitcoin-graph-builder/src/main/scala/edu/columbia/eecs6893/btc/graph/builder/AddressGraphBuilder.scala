@@ -3,7 +3,7 @@ import edu.columbia.eecs6893.btc.graph.builder.models.{AddressGraphEdge, Address
 import org.apache.spark.graphx.{Edge, Graph, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions.monotonically_increasing_id
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, SparkSession, functions}
 
 /**
  * Address graph builder which constructs an address graph.
@@ -40,7 +40,7 @@ class AddressGraphBuilder extends GraphBuilder[AddressGraphNode, AddressGraphEdg
        INNER JOIN ${NODE_VIEW} n2 ON n2.address = g.output_address
        """
 
-  override def buildGraph(rawTransactionDataFrame: DataFrame): Graph[AddressGraphNode, AddressGraphEdge] = {
+  override def constructGraphComponents(rawTransactionDataFrame: DataFrame): (DataFrame, DataFrame) = {
     val spark = rawTransactionDataFrame.sparkSession
 
     // Make transaction data available in spark sql
@@ -51,12 +51,16 @@ class AddressGraphBuilder extends GraphBuilder[AddressGraphNode, AddressGraphEdg
     graphDf.createOrReplaceTempView(GRAPH_VIEW)
 
     // Fetch nodes and edges
-    val nodeDf = getNodes(spark)
-    val edgeDf = getEdges(spark)
+    val nodesDf = getNodes(spark)
+    val edgesDf = getEdges(spark)
 
+    (nodesDf, edgesDf)
+  }
+
+  override def buildGraph(nodesDf: DataFrame, edgesDf: DataFrame): Graph[AddressGraphNode, AddressGraphEdge] = {
     // Convert to graph representations
-    val nodesRdd = getNodesRdd(nodeDf)
-    val edgesRdd = getEdgesRdd(edgeDf)
+    val nodesRdd = getNodesRdd(nodesDf)
+    val edgesRdd = getEdgesRdd(edgesDf)
 
     Graph(nodesRdd, edgesRdd)
   }
@@ -74,11 +78,13 @@ class AddressGraphBuilder extends GraphBuilder[AddressGraphNode, AddressGraphEdg
   }
 
   private def getNodesRdd(nodeDf: DataFrame): RDD[(VertexId, AddressGraphNode)] = {
-    nodeDf.rdd.map(row => (row.getLong(1), AddressGraphNode(row.getString(0))))
+    nodeDf.select(functions.col("vertexId"), functions.col("address")).rdd
+      .map(row => (row.getLong(0), AddressGraphNode(row.getString(1))))
   }
 
   private def getEdgesRdd(edgeDf: DataFrame): RDD[Edge[AddressGraphEdge]] = {
     // TODO: Incorporate other attributes into node
-    edgeDf.rdd.map(row => Edge(row.getLong(5), row.getLong(6), AddressGraphEdge(row.getString(0))))
+    edgeDf.select(functions.col("output_vertex"), functions.col("input_vertex"), functions.col("hash")).rdd
+      .map(row => Edge(row.getLong(0), row.getLong(1), AddressGraphEdge(row.getString(2))))
   }
 }
