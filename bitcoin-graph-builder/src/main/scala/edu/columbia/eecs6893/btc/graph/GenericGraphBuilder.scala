@@ -7,8 +7,8 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
 import scopt.OParser
 
 /**
- * TODO: We should make the general interface of a "Graph Builder" more generic
- *       and pass CLI args to change the processing.
+ * Generic graph builder entry point. It provides command line options to build a graph from raw bitcoin blockchain
+ * data from a raw dump provided by Google's BigQuery table.
  */
 object GenericGraphBuilder {
   private final val APP_NAME = "AddressGraphBuilder"
