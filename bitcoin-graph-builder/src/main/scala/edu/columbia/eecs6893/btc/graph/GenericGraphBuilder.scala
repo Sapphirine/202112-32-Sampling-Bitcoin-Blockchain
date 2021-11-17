@@ -1,6 +1,8 @@
 package edu.columbia.eecs6893.btc.graph
 
-import edu.columbia.eecs6893.btc.graph.builder.AddressGraphBuilder
+import edu.columbia.eecs6893.btc.graph.builder.{AddressGraphBuilder, HyperGraphBuilder, TransactionGraphBuilder}
+import edu.columbia.eecs6893.btc.graph.builder.config.GraphBuilderArguments
+import edu.columbia.eecs6893.btc.graph.builder.config.GraphType.{ADDRESS_GRAPH, GraphType, HYPER_GRAPH, TRANSACTION_GRAPH}
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import scopt.OParser
 
@@ -28,8 +30,12 @@ object GenericGraphBuilder {
 
     rawTxDf.printSchema()
 
-    // TODO: Need to fix this. Currently on "AddressGraph" supported
-    val graphBuilder = new AddressGraphBuilder
+    val graphBuilder = options.graphType match {
+      case ADDRESS_GRAPH => new AddressGraphBuilder
+      case TRANSACTION_GRAPH => new TransactionGraphBuilder
+      case HYPER_GRAPH => new HyperGraphBuilder
+      case _ => throw new RuntimeException("Unknown graph type requested to build")
+    }
     val (nodes, edges) = graphBuilder.constructGraphComponents(rawTxDf)
 
     println("--- Graph nodes: " + nodes.count())
@@ -54,8 +60,22 @@ object GenericGraphBuilder {
         .required(),
       opt[Unit]('n', "no-overwrite")
         .action((_, c) => c.copy(overwrite = SaveMode.ErrorIfExists))
-        .text("Disable overwrite on the output (overwrite enabled by default)")
+        .text("Disable overwrite on the output (overwrite enabled by default)"),
+      opt[Int]('t', "graph-type")
+        .action((x, c) => c.copy(graphType = parseGraphType(x)))
+        .validate(x => if (x >= 1 && x <= 3) success
+                       else failure("Valid values are between 1 and 3. See -h for more"))
+        .text("Choose graph type to builder. Values: 1 = AddressGraph, 2 = TransactionGraph, 3 = HyperGraph (default=1)")
     )
     OParser.parse(sequence, args, GraphBuilderArguments()).orNull
+  }
+
+  private def parseGraphType(value: Int): GraphType = {
+    value match {
+      case 1 => ADDRESS_GRAPH
+      case 2 => TRANSACTION_GRAPH
+      case 3 => HYPER_GRAPH
+      case _ => throw new RuntimeException("Bad argument, cannot parse graph type")
+    }
   }
 }
