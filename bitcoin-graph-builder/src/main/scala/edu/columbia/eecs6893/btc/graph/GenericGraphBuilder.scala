@@ -70,7 +70,7 @@ object GenericGraphBuilder {
     OParser.parse(sequence, args, GraphBuilderArguments()).orNull
   }
 
-  private def parseGraphType(value: Int): GraphType = {
+   def parseGraphType(value: Int): GraphType = {
     value match {
       case 1 => ADDRESS_GRAPH
       case 2 => TRANSACTION_GRAPH

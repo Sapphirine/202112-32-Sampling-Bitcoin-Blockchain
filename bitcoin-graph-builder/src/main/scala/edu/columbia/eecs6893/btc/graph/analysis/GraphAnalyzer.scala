@@ -6,7 +6,7 @@ import org.apache.spark.sql.DataFrame
 /**
  * Graph analysis trait which takes a graph and produces a result in the form of a dataframe.
  */
-trait GraphAnalysis[VD,ED] {
+trait GraphAnalyzer[VD,ED] {
 
   /**
    * Analyze a graph and produce a result.
