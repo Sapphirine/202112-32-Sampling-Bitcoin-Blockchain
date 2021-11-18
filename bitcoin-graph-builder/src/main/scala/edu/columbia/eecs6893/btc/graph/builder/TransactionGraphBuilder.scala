@@ -3,9 +3,9 @@ import org.apache.spark.graphx.Graph
 import org.apache.spark.sql.DataFrame
 
 // TODO: Implement
-class TransactionGraphBuilder extends GraphBuilder[Unit, Unit] {
+class TransactionGraphBuilder extends GraphBuilder[Serializable, Serializable] {
 
-  override def buildGraph(nodes: DataFrame, edges: DataFrame): Graph[Unit, Unit] = ???
+  override def buildGraph(nodes: DataFrame, edges: DataFrame): Graph[Serializable, Serializable] = ???
 
   override def constructGraphComponents(rawTransactionDataFrame: DataFrame): (DataFrame, DataFrame) = ???
 }

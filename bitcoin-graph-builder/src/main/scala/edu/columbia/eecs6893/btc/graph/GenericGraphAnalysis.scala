@@ -30,22 +30,27 @@ object GenericGraphAnalysis {
     // Build graph
     val graphBuilder = options.graphType match {
       case ADDRESS_GRAPH => new AddressGraphBuilder
-      case TRANSACTION_GRAPH => new TransactionGraphBuilder
-      case HYPER_GRAPH => new HyperGraphBuilder
+      // TODO: Fix types
+//      case TRANSACTION_GRAPH => new TransactionGraphBuilder
+//      case HYPER_GRAPH => new HyperGraphBuilder
       case _ => throw new RuntimeException("Unexpected graph type")
     }
 
+    nodesDf.cache()
+    edgesDf.cache()
     val graph = graphBuilder.buildGraph(nodesDf, edgesDf)
 
     // Run analysis
     val analyzer = options.analysisType match {
-      // TODO: More configurable types
-      case STRONGLY_CONNECTED_COMPONENT => new StronglyConnectedComponentAnalyzer[AddressGraphEdge,AddressGraphNode]()
+      // TODO: Fix types.
+      case STRONGLY_CONNECTED_COMPONENT => new StronglyConnectedComponentAnalyzer(spark)
       case _ => throw new RuntimeException("Unexpected analysis type")
     }
 
-    // TODO:
-//    val results = analyzer.analyze(graph)
+    val results = analyzer.analyze(graph)
+
+    // Save results
+    results.write.mode(options.overwrite).parquet(options.outputPath)
   }
 
   private def parseArgs(args: Array[String]): GraphAnalysisArguments = {

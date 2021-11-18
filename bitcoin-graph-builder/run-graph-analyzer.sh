@@ -5,10 +5,11 @@
 $SPARK_HOME/bin/spark-submit \
     --master "local" \
     --driver-memory 2g \
-    --executor-memory  2g \
+    --executor-memory  14g \
     --name GraphAnalyzer \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphAnalysis \
     ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
     -e test-data/address-graph/edges \
     -v test-data/address-graph/nodes \
-    -o test-data/address-graph-analysis 
+    -o test-data/address-graph-analysis \
+    -t 1

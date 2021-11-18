@@ -1,3 +1,3 @@
 package edu.columbia.eecs6893.btc.graph.builder.models
 
-case class AddressGraphEdge(transactionHash: String)
+case class AddressGraphEdge(transactionHash: String) extends Serializable
