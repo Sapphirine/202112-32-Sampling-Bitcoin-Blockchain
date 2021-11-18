@@ -6,5 +6,7 @@ package edu.columbia.eecs6893.btc.graph.analysis.config
 object AnalysisType extends Enumeration {
   type AnalysisType = Value
 
-  val STRONGLY_CONNECTED_COMPONENT = Value("StronglyConnectedComponent")
+  final val STRONGLY_CONNECTED_COMPONENT = Value("StronglyConnectedComponent")
+  final val IN_DEGREE_DISTRIBUTION = Value("InDegreeDistribution")
+  final val OUT_DEGREE_DISTRIBUTION = Value("OutDegreeDistribution")
 }

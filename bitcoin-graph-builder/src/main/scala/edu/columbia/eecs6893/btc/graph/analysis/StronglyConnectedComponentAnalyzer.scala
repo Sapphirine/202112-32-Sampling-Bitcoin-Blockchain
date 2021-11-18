@@ -16,6 +16,7 @@ class StronglyConnectedComponentAnalyzer(
   override def analyze(graph: Graph[AddressGraphNode, AddressGraphEdge]): DataFrame = {
     graph.cache()
     val scc = graph.stronglyConnectedComponents(numIters)
+    scc.cache()
     val edgesRdd = scc.edges.map(e => FlatGraphOutputRecord("edge", e.srcId, e.dstId, e.attr))
     val verticesRdd = graph.mask(scc).vertices.map(v => FlatGraphOutputRecord("vertex", null, null, v._2))
     val edgesDf = spark.createDataFrame(edgesRdd).toDF("recordType", "srcId", "destId", "data")

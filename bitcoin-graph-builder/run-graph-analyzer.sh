@@ -12,4 +12,5 @@ $SPARK_HOME/bin/spark-submit \
     -e test-data/address-graph/edges \
     -v test-data/address-graph/nodes \
     -o test-data/address-graph-analysis \
-    -t 1
+    -g 1 \
+    -t 2
