@@ -6,7 +6,7 @@ import org.apache.spark.sql.DataFrame
 /**
  * Graph analysis trait which takes a graph and produces a result in the form of a dataframe.
  */
-trait GraphAnalyzer[VD,ED] {
+trait GraphAnalyzer[VD,ED] extends Serializable {
 
   /**
    * Analyze a graph and produce a result.

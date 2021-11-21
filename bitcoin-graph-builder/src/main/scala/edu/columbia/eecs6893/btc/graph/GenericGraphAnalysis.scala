@@ -1,8 +1,8 @@
 package edu.columbia.eecs6893.btc.graph
 
 import edu.columbia.eecs6893.btc.graph.GenericGraphBuilder.parseGraphType
-import edu.columbia.eecs6893.btc.graph.analysis.{InDegreeDistributionAnalyzer, OutDegreeDistributionAnalyzer, StronglyConnectedComponentAnalyzer}
-import edu.columbia.eecs6893.btc.graph.analysis.config.AnalysisType.{AnalysisType, IN_DEGREE_DISTRIBUTION, OUT_DEGREE_DISTRIBUTION, STRONGLY_CONNECTED_COMPONENT}
+import edu.columbia.eecs6893.btc.graph.analysis.{ClusterCoefficientDistributionAnalyzer, InDegreeDistributionAnalyzer, OutDegreeDistributionAnalyzer, StronglyConnectedComponentAnalyzer}
+import edu.columbia.eecs6893.btc.graph.analysis.config.AnalysisType.{AnalysisType, CLUSTERING_COEFFICIENT, IN_DEGREE_DISTRIBUTION, OUT_DEGREE_DISTRIBUTION, STRONGLY_CONNECTED_COMPONENT}
 import edu.columbia.eecs6893.btc.graph.analysis.config.GraphAnalysisArguments
 import edu.columbia.eecs6893.btc.graph.builder.{AddressGraphBuilder, HyperGraphBuilder, TransactionGraphBuilder}
 import edu.columbia.eecs6893.btc.graph.builder.config.GraphType.{ADDRESS_GRAPH, HYPER_GRAPH, TRANSACTION_GRAPH}
@@ -46,6 +46,7 @@ object GenericGraphAnalysis {
       case STRONGLY_CONNECTED_COMPONENT => new StronglyConnectedComponentAnalyzer(spark)
       case IN_DEGREE_DISTRIBUTION => new InDegreeDistributionAnalyzer(spark)
       case OUT_DEGREE_DISTRIBUTION => new OutDegreeDistributionAnalyzer(spark)
+      case CLUSTERING_COEFFICIENT => new ClusterCoefficientDistributionAnalyzer(spark)
       case _ => throw new RuntimeException("Unexpected analysis type")
     }
 
@@ -81,8 +82,8 @@ object GenericGraphAnalysis {
         .action((_, c) => c.copy(overwrite = SaveMode.ErrorIfExists)),
       opt[Int]('t', "analysis-type")
         .text("Type of graph analysis to run. Values: 1 = strongly connected components (default=1)")
-        .validate(x => if (x >= 1 && x <= 3) success
-                       else failure("Valid values are between 1 and 3. See -h for more."))
+        .validate(x => if (x >= 1 && x <= 4) success
+                       else failure("Valid values are between 1 and 4. See -h for more."))
         .action((x, c) => c.copy(analysisType = parseAnalysisType(x)))
     )
     OParser.parse(sequence, args, GraphAnalysisArguments()).orNull
@@ -93,6 +94,7 @@ object GenericGraphAnalysis {
       case 1 => STRONGLY_CONNECTED_COMPONENT
       case 2 => IN_DEGREE_DISTRIBUTION
       case 3 => OUT_DEGREE_DISTRIBUTION
+      case 4 => CLUSTERING_COEFFICIENT
       case _ => throw new RuntimeException("Unexpected analysis type")
     }
   }
