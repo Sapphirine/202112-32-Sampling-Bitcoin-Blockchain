@@ -1,7 +1,7 @@
 package edu.columbia.eecs6893.btc.graph
 
 import edu.columbia.eecs6893.btc.graph.GenericGraphBuilder.parseGraphType
-import edu.columbia.eecs6893.btc.graph.analysis.{InDegreeDistributionAnalyzer, StronglyConnectedComponentAnalyzer}
+import edu.columbia.eecs6893.btc.graph.analysis.{InDegreeDistributionAnalyzer, OutDegreeDistributionAnalyzer, StronglyConnectedComponentAnalyzer}
 import edu.columbia.eecs6893.btc.graph.analysis.config.AnalysisType.{AnalysisType, IN_DEGREE_DISTRIBUTION, OUT_DEGREE_DISTRIBUTION, STRONGLY_CONNECTED_COMPONENT}
 import edu.columbia.eecs6893.btc.graph.analysis.config.GraphAnalysisArguments
 import edu.columbia.eecs6893.btc.graph.builder.{AddressGraphBuilder, HyperGraphBuilder, TransactionGraphBuilder}
@@ -45,6 +45,7 @@ object GenericGraphAnalysis {
       // TODO: Fix types.
       case STRONGLY_CONNECTED_COMPONENT => new StronglyConnectedComponentAnalyzer(spark)
       case IN_DEGREE_DISTRIBUTION => new InDegreeDistributionAnalyzer(spark)
+      case OUT_DEGREE_DISTRIBUTION => new OutDegreeDistributionAnalyzer(spark)
       case _ => throw new RuntimeException("Unexpected analysis type")
     }
 
