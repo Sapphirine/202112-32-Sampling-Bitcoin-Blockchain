@@ -10,4 +10,4 @@ gcloud dataproc clusters create btc-project \
     --project  $project \
     --bucket $staging_bucket \
     --initialization-actions=gs://dataproc-initialization-actions/python/pip-install.sh,gs://dataproc-initialization-actions/connectors/connectors.sh \
-    --single-node 
+    --num-workers=3
