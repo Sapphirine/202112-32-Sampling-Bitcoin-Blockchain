@@ -9,6 +9,6 @@ import org.apache.spark.sql.SaveMode
 case class GraphBuilderArguments(rawDataLoadPath: String = "",
                                  graphOutputPath: String = "",
                                  overwrite: SaveMode = SaveMode.Overwrite,
-                                 graphType: GraphType = ADDRESS_GRAPH) {
-
+                                 graphType: GraphType = ADDRESS_GRAPH,
+                                 numPartitions: Option[Int] = None) {
 }

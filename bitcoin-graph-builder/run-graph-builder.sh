@@ -9,5 +9,6 @@ $SPARK_HOME/bin/spark-submit \
     --name GraphBuilder \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphBuilder \
     ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
+    -p 1 \
     -i test-data/raw-btc-transactions \
     -o test-data/address-graph

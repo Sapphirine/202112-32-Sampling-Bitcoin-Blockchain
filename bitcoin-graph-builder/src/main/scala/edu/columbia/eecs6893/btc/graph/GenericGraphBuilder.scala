@@ -41,9 +41,15 @@ object GenericGraphBuilder {
     println("--- Graph nodes: " + nodes.count())
     println("--- Graph edges: " + edges.count())
 
+    // Specify number of partitions if desired.
+    val (edgesOut, nodesOut) = options.numPartitions match {
+      case None => (edges, nodes)
+      case Some(x) => (edges.coalesce(x), nodes.coalesce(x))
+    }
+
     // Save graph components
-    nodes.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/nodes")
-    edges.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/edges")
+    nodesOut.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/nodes")
+    edgesOut.write.mode(options.overwrite).parquet(s"${options.graphOutputPath}/edges")
   }
 
   private def parseArgs(args: Array[String]): GraphBuilderArguments = {
@@ -65,7 +71,11 @@ object GenericGraphBuilder {
         .action((x, c) => c.copy(graphType = parseGraphType(x)))
         .validate(x => if (x >= 1 && x <= 3) success
                        else failure("Valid values are between 1 and 3. See -h for more"))
-        .text("Choose graph type to builder. Values: 1 = AddressGraph, 2 = TransactionGraph, 3 = HyperGraph (default=1)")
+        .text("Choose graph type to builder. Values: 1 = AddressGraph, 2 = TransactionGraph, 3 = HyperGraph (default=1)"),
+      opt[Int]('p', "num-partitions")
+        .action((x, c) => c.copy(numPartitions = Some(x)))
+        .validate(x => if (x > 0) success else failure("Number of partitions must be positive"))
+        .text("Specify the number of output partitions for the results.")
     )
     OParser.parse(sequence, args, GraphBuilderArguments()).orNull
   }
