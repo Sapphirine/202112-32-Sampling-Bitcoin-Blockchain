@@ -65,6 +65,12 @@ class AddressGraphBuilder extends GraphBuilder[AddressGraphNode, AddressGraphEdg
     Graph(nodesRdd, edgesRdd)
   }
 
+  override def toDataFrames(graph: Graph[AddressGraphNode, AddressGraphEdge])(sparkSession: SparkSession): (DataFrame, DataFrame) = {
+    val nodesDf = sparkSession.createDataFrame(graph.vertices)
+    val edgesDf = sparkSession.createDataFrame(graph.edges)
+    (nodesDf, edgesDf)
+  }
+
   private def getNodes(spark: SparkSession): DataFrame = {
     // Combine all inputs and outputs to make a list of nodes
     val result = spark.sql(NODE_QUERY).distinct().withColumn("vertexId", monotonically_increasing_id())

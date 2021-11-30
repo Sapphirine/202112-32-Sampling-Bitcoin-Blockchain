@@ -1,7 +1,7 @@
 package edu.columbia.eecs6893.btc.graph.builder
 
 import org.apache.spark.graphx.Graph
-import org.apache.spark.sql.DataFrame
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 trait GraphBuilder[VD,ED] {
   /**
@@ -31,5 +31,13 @@ trait GraphBuilder[VD,ED] {
   def buildGraph(rawTransactionDataFrame: DataFrame): Graph[VD, ED] = {
     val components = constructGraphComponents(rawTransactionDataFrame)
     buildGraph(components._1, components._2)
+  }
+
+  /**
+   * Save a graph into its constituent components.
+   * @param graph
+   */
+  def toDataFrames(graph: Graph[VD,ED])(sparkSession: SparkSession): (DataFrame, DataFrame) = {
+    throw new RuntimeException("Not implemented by default.")
   }
 }

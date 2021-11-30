@@ -9,5 +9,6 @@ gcloud dataproc clusters create btc-project \
     --metadata 'bigquery-connector-version=1.0.0' \
     --project  $project \
     --bucket $staging_bucket \
+    --worker-boot-disk-size=400g \
     --initialization-actions=gs://dataproc-initialization-actions/python/pip-install.sh,gs://dataproc-initialization-actions/connectors/connectors.sh \
-    --num-workers=3
+    --num-workers=5
