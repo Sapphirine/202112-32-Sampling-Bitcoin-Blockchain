@@ -66,8 +66,12 @@ class AddressGraphBuilder extends GraphBuilder[AddressGraphNode, AddressGraphEdg
   }
 
   override def toDataFrames(graph: Graph[AddressGraphNode, AddressGraphEdge])(sparkSession: SparkSession): (DataFrame, DataFrame) = {
-    val nodesDf = sparkSession.createDataFrame(graph.vertices)
-    val edgesDf = sparkSession.createDataFrame(graph.edges)
+    val nodesDf = sparkSession
+      .createDataFrame(graph.vertices.map(x => (x._1, x._2.addressHash)))
+      .toDF("vertexId", "address")
+    val edgesDf = sparkSession.
+      createDataFrame(graph.edges.map(x => (x.srcId, x.dstId, x.attr.transactionHash)))
+      .toDF("output_vertex", "input_vertex", "hash")
     (nodesDf, edgesDf)
   }
 
