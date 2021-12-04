@@ -5,7 +5,7 @@ import org.apache.spark.graphx.Graph
 /**
  * Generic graph sampling algorithm
  */
-trait GraphSampler[VD,ED] {
+trait GraphSampler[VD,ED] extends Serializable {
 
   /**
    * Sample a graph and produce a new graph.
