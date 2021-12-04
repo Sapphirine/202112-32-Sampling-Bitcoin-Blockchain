@@ -11,7 +11,7 @@ $SPARK_HOME/bin/spark-submit \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphSampler \
     ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
     -i test-data/address-graph \
-    -o test-data/address-graph-sampled \
+    -o test-data/address-graph-sampled-random-node \
     -g 1 \
-    -s 1
+    -s 2
 

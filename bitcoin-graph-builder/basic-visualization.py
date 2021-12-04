@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 
 from pathlib import Path
 
-p = Path('./test-data/address-graph-indegree')
+p = Path('./test-data/address-graph-sampled-indegree-rn')
 dfs = [pd.read_parquet(f) for f in p.glob("*.parquet")]
 
 df = pd.concat(dfs)
@@ -19,11 +19,11 @@ plt.ylabel('Count')
 plt.xlabel('In-Degree')
 plt.yscale('log')
 plt.xscale('log')
-plt.savefig('./indegree.png')
+plt.savefig('./indegree-rn.png')
 plt.show()
 
 # Out-degree
-p = Path('./test-data/address-graph-outdegree')
+p = Path('./test-data/address-graph-sampled-outdegree-rn')
 dfs = [pd.read_parquet(f) for f in p.glob("*.parquet")]
 
 df = pd.concat(dfs)
@@ -39,5 +39,5 @@ plt.ylabel('Count')
 plt.xlabel('Out-Degree')
 plt.yscale('log')
 plt.xscale('log')
-plt.savefig('./outdegree.png')
+plt.savefig('./outdegree-rn.png')
 plt.show()

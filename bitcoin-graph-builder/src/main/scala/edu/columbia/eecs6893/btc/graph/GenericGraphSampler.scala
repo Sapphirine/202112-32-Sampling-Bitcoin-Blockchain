@@ -2,7 +2,7 @@ package edu.columbia.eecs6893.btc.graph
 
 import edu.columbia.eecs6893.btc.graph.builder.{AddressGraphBuilder, GraphBuilder}
 import edu.columbia.eecs6893.btc.graph.builder.models.{AddressGraphEdge, AddressGraphNode}
-import edu.columbia.eecs6893.btc.graph.sampler.{GraphSampler, RandomEdgeSampler}
+import edu.columbia.eecs6893.btc.graph.sampler.{GraphSampler, RandomEdgeSampler, RandomNodeSampler}
 import edu.columbia.eecs6893.btc.graph.sampler.config.GraphSamplerOptions
 import org.apache.spark.sql.{SaveMode, SparkSession}
 import scopt.OParser
@@ -45,8 +45,8 @@ object GenericGraphSampler {
     import builder._
     val sequence = OParser.sequence(
       opt[Int]('s', "sampler-type")
-        .text("Sampler type (1 = random edge)")
-        .validate(x => if (x >= 1 && x <= 1) success else failure("Valid sampler values are between 1 and 1"))
+        .text("Sampler type (1 = random edge, 2 = random node)")
+        .validate(x => if (x >= 1 && x <= 2) success else failure("Valid sampler values are between 1 and 2"))
         .action((x, c) => c.copy(sampler = parseSampler(x)))
         .required(),
       opt[String]('i', "input-path")
@@ -72,6 +72,7 @@ object GenericGraphSampler {
   private def parseSampler(value: Int): GraphSampler[AddressGraphNode, AddressGraphEdge] = {
     value match {
       case 1 => new RandomEdgeSampler
+      case 2 => new RandomNodeSampler
       case _ => throw new RuntimeException("Invalid sampler")
     }
   }
