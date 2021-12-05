@@ -1,17 +1,52 @@
 #!/usr/bin/env bash
 
+PASSTHROUGH=("--name GraphSampler")
+INPUT=test-data/address-graph
+OUTPUT=test-data/address-graph-sampled-random-node
+SAMPLER_TYPE=2 # Random node
+
+# CLI parser
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -i|--input)
+            INPUT=$2
+            shift
+            shift
+            ;;
+        -o|--output)
+            OUTPUT=$2
+            shift
+            shift
+            ;;
+        -s|--sampler-type)
+            ANALYSIS_TYPE=$2
+            shift
+            shift
+            ;;
+        *)
+            PASSTHROUGH+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Print help if we don't have what we need to execute
+if [[ -z "$INPUT" || -z "$OUTPUT" || -z "$SAMPLER_TYPE" ]]; then
+    echo "Help: This application samples a graph"
+    echo "-i|--input          Input path to graph for analysis"
+    echo "-o|--output         Output path for analysis results"
+    echo "-s|--sampler-type   Sampler type (1=random edge, 2=random node)"
+    echo ""
+    exit 1
+fi
+
 # Helper script to run with a local Spark/HDFS setup
-# To run it, simply place the "raw-btc-transactions" directory into the "test-data" directory.
 $SPARK_HOME/bin/spark-submit \
-    --master "local[*]" \
-    --total-executor-cores 5 \
-    --driver-memory 2g \
-    --executor-memory  10g \
-    --name GraphSampler \
+    $PASSTHROUGH[@] \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphSampler \
     ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
-    -i test-data/address-graph \
-    -o test-data/address-graph-sampled-random-node \
     -g 1 \
-    -s 2
+    -i $INPUT \
+    -o $OUTPUT \
+    -s $SAMPLER_TYPE
 
