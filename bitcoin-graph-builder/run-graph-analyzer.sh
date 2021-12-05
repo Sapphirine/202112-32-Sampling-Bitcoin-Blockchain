@@ -10,8 +10,7 @@ $SPARK_HOME/bin/spark-submit \
     --name GraphAnalyzer \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphAnalysis \
     ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
-    -e test-data/address-graph-sampled-random-node/edges \
-    -v test-data/address-graph-sampled-random-node/nodes \
+    -i test-data/address-graph-sampled-random-node \
     -o test-data/address-graph-sampled-outdegree-rn \
     -g 1 \
     -t 3

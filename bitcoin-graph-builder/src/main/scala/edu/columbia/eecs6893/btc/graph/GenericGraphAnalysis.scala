@@ -24,8 +24,8 @@ object GenericGraphAnalysis {
       .getOrCreate()
 
     // Load edges and nodes
-    val edgesDf = spark.read.parquet(options.edgesPath)
-    val nodesDf = spark.read.parquet(options.verticesPath)
+    val edgesDf = spark.read.parquet(s"${options.inputPath}/edges")
+    val nodesDf = spark.read.parquet(s"${options.inputPath}/nodes")
 
     // Build graph
     val graphBuilder = options.graphType match {
@@ -60,13 +60,9 @@ object GenericGraphAnalysis {
     val builder = OParser.builder[GraphAnalysisArguments]
     import builder._
     val sequence = OParser.sequence(
-      opt[String]('e', "edge-path")
-        .text("Path to load graph edges dataframe")
-        .action((x, c) => c.copy(edgesPath = x))
-        .required(),
-      opt[String]('v', "vertices-path")
-        .text("Path to load graph vertices dataframe")
-        .action((x, c) => c.copy(verticesPath = x))
+      opt[String]('i', "input-path")
+        .text("Path to load graph dataframes")
+        .action((x, c) => c.copy(inputPath = x))
         .required(),
       opt[Int]('g', "graph-type")
         .action((x, c) => c.copy(graphType = parseGraphType(x)))
