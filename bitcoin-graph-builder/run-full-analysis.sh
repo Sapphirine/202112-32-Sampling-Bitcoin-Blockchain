@@ -102,11 +102,6 @@ OUTDEGREE_UNSAMPLED_PATH="$DIR_PREFIX/unsampled-outdegree"
 
 if [[ ! $SKIP_UNSAMPLED_ANALYSIS -eq 1 ]]; then
     echo "Running unsampled analysis..."
-    ./run-graph-analyzer.sh \
-        $PASSTHROUGH[@] \
-        -i $ADDRESS_GRAPH_PATH \
-        -o $INDEGREE_UNSAMPLED_PATH \
-        -t 2 &
     run_analysis $ADDRESS_GRAPH_PATH $INDEGREE_UNSAMPLED_PATH 2
     P1=$!
     
