@@ -8,6 +8,14 @@ You must have Java 11 and SBT to build the application.
 
 Additionally, a Spark installation is required to run the scripts (either local or cluster). In particular, your `JAVA_HOME` should be set to your Java 11 JDK and `SPARK_HOME` should be set to your spark installation.
 
+Also, the `JAR_PATH` must be set appropriately. If it's not set, it is assumed to be `pwd`. In local mode, the jar path should be set to the build location:
+
+```
+JAR_PATH=./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar
+```
+
+where `pwd` is within the `bitcoin-graph-builder` directory.
+
 # Building the Application
 
 The application consists of a single jar and several different runner scripts. To build the application, run the following commands:
@@ -35,6 +43,7 @@ In local mode, ensure that your data is located in `./test-data` (or pass script
 
 ```
 $ cd bitcoin-graph-builder
+$ export JAR_PATH=./target/scala-2.12
 $ ./run-full-analysis.sh
 ```
 

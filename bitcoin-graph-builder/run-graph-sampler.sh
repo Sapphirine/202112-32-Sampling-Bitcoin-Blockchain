@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ -z "$JAR_PATH" ]]; then
+    JAR_PATH="."
+fi
+
 PASSTHROUGH=("--name GraphSampler")
 INPUT=test-data/address-graph
 OUTPUT=test-data/address-graph-sampled-random-node
@@ -44,7 +48,7 @@ fi
 $SPARK_HOME/bin/spark-submit \
     $PASSTHROUGH[@] \
     --class edu.columbia.eecs6893.btc.graph.GenericGraphSampler \
-    ./target/scala-2.12/bitcoin-graph-builder-assembly-1.0.jar \
+    $JAR_PATH/bitcoin-graph-builder-assembly-1.0.jar \
     -g 1 \
     -i $INPUT \
     -o $OUTPUT \
