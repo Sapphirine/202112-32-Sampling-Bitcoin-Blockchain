@@ -12,4 +12,5 @@ case class GraphSamplerOptions(graphInputPath: String = "",
                                graphOutputPath: String = "",
                                overwrite: SaveMode = SaveMode.Overwrite,
                                builder: GraphBuilder[AddressGraphNode, AddressGraphEdge] = null,
-                               sampler: GraphSampler[AddressGraphNode, AddressGraphEdge] = null)
+                               samplerCreator: Double => GraphSampler[AddressGraphNode, AddressGraphEdge] = null,
+                               sampleRate: Double = 0.15)

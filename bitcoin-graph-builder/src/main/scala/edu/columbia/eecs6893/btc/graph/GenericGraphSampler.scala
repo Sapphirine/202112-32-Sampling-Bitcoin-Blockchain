@@ -31,7 +31,7 @@ object GenericGraphSampler {
     val graph = builder.buildGraph(nodesDf, edgesDf)
 
     // Sample graph
-    val sampled = options.sampler.sampleGraph(graph)
+    val sampled = options.samplerCreator(options.sampleRate).sampleGraph(graph)
 
     // Save results
     val (sampledNodes, sampledEdges) = builder.toDataFrames(sampled)(spark)
@@ -47,7 +47,7 @@ object GenericGraphSampler {
       opt[Int]('s', "sampler-type")
         .text("Sampler type (1 = random edge, 2 = random node)")
         .validate(x => if (x >= 1 && x <= 2) success else failure("Valid sampler values are between 1 and 2"))
-        .action((x, c) => c.copy(sampler = parseSampler(x)))
+        .action((x, c) => c.copy(samplerCreator = parseSampler(x)))
         .required(),
       opt[String]('i', "input-path")
         .text("Path to input graph")
@@ -64,15 +64,19 @@ object GenericGraphSampler {
         .text("Graph type (1 = address graph)")
         .validate(x => if (x >= 1 && x <= 1) success else failure("Valid graph type values are between 1 and 1"))
         .action((x, c) => c.copy(builder = parseGraphType(x)))
-        .required()
+        .required(),
+      opt[Double]('r', "sample-rate")
+        .text("Sample rate to keep a portion of sampled graph (valid values between (0, 1), default=0.15)")
+        .validate(x => if (x > 0 && x < 1) success else failure("Sample rate must be greater than 0 and less than 1."))
+        .action((x, c) => c.copy(sampleRate = x))
     )
     OParser.parse(sequence, args, GraphSamplerOptions()).orNull
   }
 
-  private def parseSampler(value: Int): GraphSampler[AddressGraphNode, AddressGraphEdge] = {
+  private def parseSampler(value: Int)(sampleRate: Double): GraphSampler[AddressGraphNode, AddressGraphEdge] = {
     value match {
-      case 1 => new RandomEdgeSampler
-      case 2 => new RandomNodeSampler
+      case 1 => new RandomEdgeSampler(sampleRate)
+      case 2 => new RandomNodeSampler(sampleRate)
       case _ => throw new RuntimeException("Invalid sampler")
     }
   }
