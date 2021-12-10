@@ -73,3 +73,10 @@ This component takes in a graph (sampled or unsampled) and produces a set of ana
 
 The graph sampler takes an input graph and samples it according to some algorithm.
 
+# Visualization
+
+To visualize the results, you must install python >= 3.8 with the following libraries: `matplotlib`, `Path`, and `pandas`. You can then run the `basic-visualization.py` script to visualize the in- and out-degrees. To do so, run a command like the following:
+
+```
+$ ./basic-visualization.py <INDEGREE_RESULT_PATH> <OUTDEGREE_RESULT_PATH>
+```
