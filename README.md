@@ -2,6 +2,8 @@
 
 For EECS6893, our group has build a large graph analyzer and sampler which works on Raw Bitcoin transaction data. The intent of our project is to understand whether or not we can faithfully downsample the Bitcoin graph to make analysis easier. If we can achieve this goal, it will help for faster, more efficient analysis with less time and energy. This improves both the accessibility of analysis to improve human factos on the blockchain as well as reducing the carbon footprint of analysis.
 
+**NOTE:** The entire project is contained within the `bitcoin-graph-builder` project. This includes the graph builder, sampler, and analyzer components.
+
 # Prerequisites
 
 You must have Java 11 and SBT to build the application.
